@@ -1,0 +1,31 @@
+<div class="home-container">
+  <div class="home-header">
+    <div class="logo-section">
+      <div class="logo">ابوركان</div>
+    </div>
+    <div class="title-section">
+      <h1>نظام المخزان</h1>
+      <p>الشركة العربية للنقل والتخزين والصرف</p>
+      <p>ابوركان - فرع القصير</p>
+    </div>
+  </div>
+
+  <div class="menu-container">
+    <div class="menu-grid" dir="rtl">
+      <div *ngFor="let category of menuCategories" class="menu-category">
+        <div class="category-header">
+          <h2>{{ category.title }}</h2>
+        </div>
+        <div class="category-items">
+          <button 
+            *ngFor="let item of category.items" 
+            class="menu-item"
+            [routerLink]="item.route"
+          >
+            {{ item.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
