@@ -1,3 +1,10 @@
+body {
+  margin: 50px; /* المارجن الخارجي اللي طلبته */
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
 .home-container {
   width: 100%;
   min-height: 100vh;
@@ -62,13 +69,13 @@
 .menu-container {
   width: 100%;
   max-width: 1400px;
-  margin: 0 auto;
+  margin: 50px auto; /* حافظت على المارجن */
 }
 
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 25px;
+  gap: 40px; /* زودت المسافة بين الجداول */
 }
 
 .menu-category {
@@ -77,6 +84,7 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 10px; /* padding داخلي للجدول */
 }
 
 .menu-category:hover {
@@ -102,7 +110,7 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px; /* المسافة بين العناصر داخل كل جدول */
 }
 
 .menu-item {
@@ -143,7 +151,7 @@
 
   .menu-grid {
     grid-template-columns: 1fr;
-    gap: 15px;
+    gap: 25px; /* أقل للشاشات الصغيرة */
   }
 
   .menu-item {

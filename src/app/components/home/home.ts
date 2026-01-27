@@ -22,42 +22,42 @@ interface MenuCategory {
 export class Home {
   menuCategories: MenuCategory[] = [
     {
-      title: 'حركة اللاحقه',
+      title: 'حركة الثلاجة',
       items: [
-        { label: 'سند اسلام' },
-        { label: 'سند صرف' },
-        { label: 'سند تحويل' },
-        { label: 'سند داخل اصلاح' },
-        { label: 'مختبر تطالبات هيئة عمل' },
-        { label: 'تقرير القنوات التاجية بالمخزنات' },
-        { label: 'بنك المسعرات عن بيوم' },
-        { label: 'تقرير خسائر الملخوق' }
+        { label: 'سند استلام', route: '/inbound' },
+        { label: 'سند صرف', route: '/outbound' },
+        { label: 'سند تحويل', route: '/sand-tahweel' },
+        { label: 'سند تداخل أصناف', route: '/sand-tadahlol' },
+        { label: 'محضر تداول عهدة عميل', route: '/mohadir-tadawol' },
+        { label: 'تقرير العنابر الخاصة بالسندات ', route: '/taqrir-eanaber' },
+        { label: 'بيان المنصرف عن يوم ', route: '/bayan-monsarif' },
       ]
     },
     {
-      title: 'حركة البلاحه',
+      title: 'حركة التسجيل',
       items: [
-        { label: 'طلاقة كشف تسجيل الحد' },
-        { label: 'تسجيل باقيات من عبر' },
-        { label: 'لحنة غياب أمين المخزن' },
-        { label: 'نموج ايجاد رسالة كاملة' },
-        { label: 'تسجيل الرسائل المقفلة' },
-        { label: 'تالعية الرسائل عن الحد' },
-        { label: 'سالة رابط المتحققات بالرسائل' }
+        { label: 'طباعة كشوف تسجيل الجرد', route: '/tabaa-kushof-tajrid' },
+        { label: 'تسجيل بيانات جرد عنبر', route: '/tasjeel-bianat-tajrid' },
+        { label: 'لجنة غياب أمين المخزن', route: '/lognat-ghiyab-amin' },
+        { label: 'نموذج ادخال رسالة كاملة', route: '/nomoj-idkhal-resala' },
+        { label: 'تسجيل الرسائل الكاملة', route: '/tasjeel-resail-kamela' },
+        { label: 'تعديل موقف الرسائل ', route: '/taadeel-mowqif-resail' },
+        { label: 'طباعة الرسائل عن فترة ', route: '/tabaa-resail-fatera' },
+        { label: 'بيانات رابط الخطابات بالرسائل', route: '/bianat-rabat-khetabat' }
       ]
     },
     {
-      title: 'نظام النسع',
+      title: 'نظام التتبع',
       items: [
-        { label: 'رسائل سند الاسلام' },
-        { label: 'رسائل سند الصرف' },
-        { label: 'رسائل سند التحويل' },
-        { label: 'رسائل سند الباتحويل' },
-        { label: 'سيغات بسيوجيث ريحتها' },
-        { label: 'شيغات لم تتر ريحتاها' },
-        { label: 'موقوف البرمج على الاجراطات' },
-        { label: 'متطالقة ربط المسبواحات بالمخزنات' },
-        { label: 'كتاب الاجراطات تاريخ الاضاحات' }
+        { label: 'رسائل سندات الاستلام', route: '/resail-sand-astelam' },
+        { label: 'رسائل سندات الصرف', route: '/resail-sand-serf' },
+        { label: 'رسائل سندات التحويل', route: '/resail-sand-tahweel' },
+        { label: 'رسائل سند التداخل', route: '/resail-sand-tadahlol' },
+        { label: 'سندات يستوجب ربطها', route: '/sandaat-yastaujob-rabta' },
+        { label: 'شهادات لم يتم ارسالها ', route: '/shahadat-lam-yotom-irsaal' },
+        { label: 'موقوف التوقيع علي الافراجات ', route: '/mowqof-tawqee-afrajat' },
+        { label: 'مطابقة ربط الشهادات بالسندات', route: '/mutabaqa-rabat-shahadat' },
+        { label: 'بيان الافراجات بتاريخ الانتاج ', route: '/bayan-afrajat-tarekh' }
       ]
     }
   ];
