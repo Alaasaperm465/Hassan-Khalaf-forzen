@@ -12,7 +12,7 @@ export interface Product {
 })
 export class ProductService {
 
-  private apiUrl = 'https://localhost:7006/api/product';
+  private apiUrl = 'https://localhost:7006/api/Product';
 
   constructor(private http: HttpClient) {}
 
