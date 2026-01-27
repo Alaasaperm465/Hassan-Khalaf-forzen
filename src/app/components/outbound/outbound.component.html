@@ -1,0 +1,160 @@
+<div class="outbound-container">
+  <div class="outbound-wrapper">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-icon">📤</div>
+      <div class="header-content">
+        <h1 class="page-title">Outbound Shipment</h1>
+        <p class="page-subtitle">Process outgoing inventory stock</p>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <!-- Success Alert -->
+      <div *ngIf="success" class="alert alert-success" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+        </svg>
+        <span>{{ success }}</span>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="error" class="alert alert-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
+      <form [formGroup]="outboundForm" (ngSubmit)="onSubmit()">
+        <!-- Product Name -->
+        <div class="form-group">
+          <label for="productName" class="form-label">
+            <span class="label-icon">📝</span>
+            Product Name
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="productName"
+              formControlName="productName"
+              class="form-control"
+              placeholder="Enter product name"
+              [class.is-invalid]="submitted && f['productName'].errors"
+            />
+          </div>
+          <div *ngIf="submitted && f['productName'].errors" class="invalid-feedback">
+            <div *ngIf="f['productName'].errors['required']">Product name is required</div>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="form-group">
+          <label for="quantity" class="form-label">
+            <span class="label-icon">📊</span>
+            Quantity
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="number"
+              id="quantity"
+              formControlName="quantity"
+              class="form-control"
+              placeholder="Enter quantity"
+              [class.is-invalid]="submitted && f['quantity'].errors"
+            />
+          </div>
+          <div *ngIf="submitted && f['quantity'].errors" class="invalid-feedback">
+            <div *ngIf="f['quantity'].errors['required']">Quantity is required</div>
+            <div *ngIf="f['quantity'].errors['min']">Quantity must be at least 1</div>
+          </div>
+        </div>
+
+        <!-- Order ID -->
+        <div class="form-group">
+          <label for="orderId" class="form-label">
+            <span class="label-icon">🆔</span>
+            Order ID
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="orderId"
+              formControlName="orderId"
+              class="form-control"
+              placeholder="Enter order ID"
+              [class.is-invalid]="submitted && f['orderId'].errors"
+            />
+          </div>
+          <div *ngIf="submitted && f['orderId'].errors" class="invalid-feedback">
+            <div *ngIf="f['orderId'].errors['required']">Order ID is required</div>
+          </div>
+        </div>
+
+        <!-- Destination -->
+        <div class="form-group">
+          <label for="destination" class="form-label">
+            <span class="label-icon">🚚</span>
+            Destination
+          </label>
+          <div class="input-wrapper">
+            <select
+              id="destination"
+              formControlName="destination"
+              class="form-control"
+              [class.is-invalid]="submitted && f['destination'].errors"
+            >
+              <option value="" disabled>Select destination</option>
+              <option value="customer">Customer Direct</option>
+              <option value="distribution">Distribution Center</option>
+              <option value="retail">Retail Store</option>
+              <option value="return">Return Center</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div *ngIf="submitted && f['destination'].errors" class="invalid-feedback">
+            <div *ngIf="f['destination'].errors['required']">Destination is required</div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label for="notes" class="form-label">
+            <span class="label-icon">📋</span>
+            Shipping Notes (Optional)
+          </label>
+          <div class="input-wrapper">
+            <textarea
+              id="notes"
+              formControlName="notes"
+              class="form-control textarea"
+              placeholder="Add any special handling instructions..."
+              rows="4"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading"
+            [class.loading]="loading"
+          >
+            <span *ngIf="loading" class="spinner">
+              <svg class="spinner-svg" viewBox="0 0 50 50">
+                <circle class="spinner-circle" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+              </svg>
+            </span>
+            <span class="btn-text">{{ loading ? 'Processing...' : 'Confirm Shipment' }}</span>
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onReset()" [disabled]="loading">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

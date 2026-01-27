@@ -1,0 +1,32 @@
+<div class="container mt-5">
+  <h2>Add Product</h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
+    <div class="mb-3">
+      <label>Product Name</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="name"
+        [class.is-invalid]="submitted && productForm.controls.name.errors"
+      />
+      <div class="invalid-feedback" *ngIf="submitted && productForm.controls.name.errors">
+        Name is required
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="loading">
+      Save
+    </button>
+
+    <a routerLink="/products" class="btn btn-secondary ms-2">
+      Cancel
+    </a>
+
+  </form>
+
+  <div class="mt-3 text-danger" *ngIf="error">
+    {{ error }}
+  </div>
+</div>

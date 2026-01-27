@@ -1,0 +1,155 @@
+<div class="inbound-container">
+  <div class="inbound-wrapper">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="header-icon">📦</div>
+      <div class="header-content">
+        <h1 class="page-title">Inbound Goods</h1>
+        <p class="page-subtitle">Register incoming inventory stock</p>
+      </div>
+    </div>
+
+    <!-- Form Card -->
+    <div class="form-card">
+      <!-- Success Alert -->
+      <div *ngIf="success" class="alert alert-success" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
+        </svg>
+        <span>{{ success }}</span>
+      </div>
+
+      <!-- Error Alert -->
+      <div *ngIf="error" class="alert alert-danger" role="alert">
+        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
+        </svg>
+        <span>{{ error }}</span>
+      </div>
+
+      <form [formGroup]="inboundForm" (ngSubmit)="onSubmit()">
+        <!-- Product Name -->
+        <div class="form-group">
+          <label for="productName" class="form-label">
+            <span class="label-icon">📝</span>
+            Product Name
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="text"
+              id="productName"
+              formControlName="productName"
+              class="form-control"
+              placeholder="Enter product name"
+              [class.is-invalid]="submitted && f['productName'].errors"
+            />
+          </div>
+          <div *ngIf="submitted && f['productName'].errors" class="invalid-feedback">
+            <div *ngIf="f['productName'].errors['required']">Product name is required</div>
+          </div>
+        </div>
+
+        <!-- Quantity -->
+        <div class="form-group">
+          <label for="quantity" class="form-label">
+            <span class="label-icon">📊</span>
+            Quantity
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="number"
+              id="quantity"
+              formControlName="quantity"
+              class="form-control"
+              placeholder="Enter quantity"
+              [class.is-invalid]="submitted && f['quantity'].errors"
+            />
+          </div>
+          <div *ngIf="submitted && f['quantity'].errors" class="invalid-feedback">
+            <div *ngIf="f['quantity'].errors['required']">Quantity is required</div>
+            <div *ngIf="f['quantity'].errors['min']">Quantity must be at least 1</div>
+          </div>
+        </div>
+
+        <!-- Warehouse Location -->
+        <div class="form-group">
+          <label for="warehouseLocation" class="form-label">
+            <span class="label-icon">🏭</span>
+            Warehouse Location
+          </label>
+          <div class="input-wrapper">
+            <select
+              id="warehouseLocation"
+              formControlName="warehouseLocation"
+              class="form-control"
+              [class.is-invalid]="submitted && f['warehouseLocation'].errors"
+            >
+              <option value="" disabled>Select warehouse location</option>
+              <option value="A1">Warehouse A - Row 1</option>
+              <option value="A2">Warehouse A - Row 2</option>
+              <option value="B1">Warehouse B - Row 1</option>
+              <option value="B2">Warehouse B - Row 2</option>
+              <option value="C1">Warehouse C - Row 1</option>
+            </select>
+          </div>
+          <div *ngIf="submitted && f['warehouseLocation'].errors" class="invalid-feedback">
+            <div *ngIf="f['warehouseLocation'].errors['required']">Warehouse location is required</div>
+          </div>
+        </div>
+
+        <!-- Expiry Date -->
+        <div class="form-group">
+          <label for="expiryDate" class="form-label">
+            <span class="label-icon">📅</span>
+            Expiry Date (Optional)
+          </label>
+          <div class="input-wrapper">
+            <input
+              type="date"
+              id="expiryDate"
+              formControlName="expiryDate"
+              class="form-control"
+            />
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label for="notes" class="form-label">
+            <span class="label-icon">📋</span>
+            Notes (Optional)
+          </label>
+          <div class="input-wrapper">
+            <textarea
+              id="notes"
+              formControlName="notes"
+              class="form-control textarea"
+              placeholder="Add any additional notes..."
+              rows="4"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="form-actions">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="loading"
+            [class.loading]="loading"
+          >
+            <span *ngIf="loading" class="spinner">
+              <svg class="spinner-svg" viewBox="0 0 50 50">
+                <circle class="spinner-circle" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+              </svg>
+            </span>
+            <span class="btn-text">{{ loading ? 'Processing...' : 'Confirm Inbound' }}</span>
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onReset()" [disabled]="loading">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
