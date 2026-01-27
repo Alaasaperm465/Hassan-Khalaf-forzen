@@ -26,7 +26,46 @@
         </svg>
         <span>{{ error }}</span>
       </div>
-
+      <table class="outbound-table">
+          <tr>
+            <td width="25%">عنبر</td>
+            <td width="25%"></td>
+            <td width="25%">أمين مخزن</td>
+            <td width="25%"></td>
+          </tr>
+          <tr>
+            <td width="16%">رقم المستند</td>
+            <td width="18%"></td>
+            <td width="16%">تاريخ المستند</td>
+            <td width="18%"></td>
+            <td width="16%">وقت المستند</td>
+            <td width="18%"></td>
+          </tr>
+          <tr>
+            <td width="150px">العميل</td>
+            <td width="100px"></td>
+            <td width="100px">المستخدم</td>
+            <td width="100px"></td>
+          </tr>
+          <tr>
+            <td width="150px">مسلسل العقد</td>
+            <td width="100px"></td>
+            <td width="100px">المفوض</td>
+            <td width="100px"></td>
+          </tr>
+          <tr>
+            <td width="150px">الفتح الاضافي</td>
+            <td width="100px"></td>
+            <td width="100px">تجميد/فرز/تكرار تداول</td>
+            <td width="100px"></td>
+          </tr>
+          <tr>
+            <td width="150px">ملاحظات</td>
+          </tr>
+        </table>
+        <table>
+          <tr width="100%">
+        </table>
       <form [formGroup]="outboundForm" (ngSubmit)="onSubmit()">
         <!-- Product Name -->
         <div class="form-group">
