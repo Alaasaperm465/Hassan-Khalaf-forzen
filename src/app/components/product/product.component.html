@@ -1,31 +1,56 @@
-<div class="container mt-5">
-
-  <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="products-container">
+  <div class="products-header">
     <h2>Products</h2>
-
-    <!-- زرار الإضافة -->
-    <a routerLink="/products/add" class="btn btn-primary">
+    <button (click)="openModal()" class="btn btn-primary btn-add">
       + Add Product
-    </a>
+    </button>
   </div>
 
-  <div *ngIf="loading" class="spinner-border"></div>
+  <div *ngIf="loading" class="spinner-border spinner-container"></div>
 
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <table *ngIf="products.length" class="table table-striped">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let p of products">
-        <td>{{ p.id }}</td>
-        <td>{{ p.name }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div *ngIf="products.length" class="table-responsive">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let p of products" class="table-row-animate">
+          <td class="id-cell">{{ p.id }}</td>
+          <td class="name-cell">{{ p.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
+  <div *ngIf="!loading && !products.length" class="no-products">
+    <p>No products found</p>
+  </div>
+
+  <div *ngIf="showModal" class="modal-overlay" (click)="closeModal()"></div>
+  <div *ngIf="showModal" class="modal-container">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Add New Product</h3>
+        <button class="modal-close" (click)="closeModal()" type="button">×</button>
+      </div>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="modal-form">
+        <div class="form-group">
+          <label for="name" class="form-label">Product Name</label>
+          <input id="name" type="text" class="form-control" formControlName="name" placeholder="Enter product name" [class.is-invalid]="productForm.get('name')?.invalid && (productForm.get('name')?.dirty || productForm.get('name')?.touched)"/>
+          <div class="invalid-feedback" *ngIf="productForm.get('name')?.invalid && (productForm.get('name')?.dirty || productForm.get('name')?.touched)">Product name is required</div>
+        </div>
+        <div *ngIf="formError" class="alert alert-danger mt-3">{{ formError }}</div>
+        <div *ngIf="formSuccess" class="alert alert-success mt-3">Product added successfully!</div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()" [disabled]="submitting">Cancel</button>
+          <button type="submit" class="btn btn-success" [disabled]="productForm.invalid || submitting"><span *ngIf="!submitting">Save Product</span><span *ngIf="submitting">Saving...</span></button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

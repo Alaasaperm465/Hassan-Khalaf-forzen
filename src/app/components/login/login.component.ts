@@ -45,8 +45,7 @@ export class LoginComponent {
     this.authService.login(this.f['username'].value, this.f['password'].value).subscribe({
       next: (response) => {
         this.loading = false;
-        // Redirect to inbound page after successful login
-        this.router.navigate(['/inbound']);
+        this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.loading = false;

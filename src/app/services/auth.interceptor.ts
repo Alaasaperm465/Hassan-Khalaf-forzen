@@ -5,10 +5,14 @@ import { AuthService } from './auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+
+  // Skip interceptor for login endpoint
+  if (req.url.includes('/auth/login')) {
+    return next(req);
+  }
+
   const token = authService.getToken();
-  
-  // Add Authorization header for all requests except login
-  if (token && !req.url.includes('/auth/login')) {
+  if (token) {
     req = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`
