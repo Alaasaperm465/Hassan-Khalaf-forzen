@@ -10,21 +10,13 @@
 
   <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div *ngIf="products.length" class="table-responsive">
-    <table class="products-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Product Name</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let p of products" class="table-row-animate">
-          <td class="id-cell">{{ p.id }}</td>
-          <td class="name-cell">{{ p.name }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div *ngIf="products.length" class="products-grid">
+    <div *ngFor="let p of products" class="product-card">
+      <div class="card-content">
+        <h3 class="product-name">{{ p.name }}</h3>
+        <p class="product-id">ID: <span>{{ p.id }}</span></p>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="!loading && !products.length" class="no-products">

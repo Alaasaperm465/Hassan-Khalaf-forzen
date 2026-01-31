@@ -1,119 +1,228 @@
 <div class="inbound-container">
-  <div class="inbound-wrapper">
+<!-- Loading Spinner Overlay -->
+  <div *ngIf="loading" class="spinner-overlay" role="status" aria-live="polite">
+    <div class="spinner-content">
+      <div class="spinner-border text-primary" role="presentation">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading warehouse data...</p>
+    </div>
+  </div>
+
+  <!-- Main Card -->
+  <div class="inbound-card">
     <!-- Header -->
-    <div class="page-header" style="text-align: center;">
-      <div class="header-content" >
-        <h1 class="page-title" >سند الاستلام</h1>
-        <p class="page-subtitle">تسجيل مخزون الوارد</p>
+    <div class="card-header">
+      <div class="header-content">
+        <h1 class="page-title">
+          <i class="icon-warehouse"></i> Inbound Warehouse
+        </h1>
+        <p class="header-subtitle">Manage incoming inventory and shipments</p>
       </div>
     </div>
 
-    <!-- Form Card -->
-    <div class="form-card" style="width:100%;">
-      <div *ngIf="success" class="alert alert-success" role="alert">
-        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"></path>
-        </svg>
-        <span>{{ success }}</span>
+    <!-- Alert Messages -->
+    <div class="alerts-container">
+      <!-- Success Alert -->
+      <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show animate-in" role="alert">
+        <div class="alert-content">
+          <i class="icon-check-circle"></i>
+          <span>{{ successMessage }}</span>
+        </div>
+        <button type="button" class="btn-close" (click)="closeAlert('success')" aria-label="Close"></button>
       </div>
+
       <!-- Error Alert -->
-      <div *ngIf="error" class="alert alert-danger" role="alert">
-        <svg class="alert-icon" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"></path>
-        </svg>
-        <span>{{ error }}</span>
+      <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible fade show animate-in" role="alert">
+        <div class="alert-content">
+          <i class="icon-alert-circle"></i>
+          <span>{{ errorMessage }}</span>
+        </div>
+        <button type="button" class="btn-close" (click)="closeAlert('error')" aria-label="Close"></button>
       </div>
-        <table class="inbound-table">
-          <tr>
-            <td width="25%">عنبر</td>
-            <td width="25%"></td>
-            <td width="25%">أمين مخزن</td>
-            <td width="25%"></td>
-          </tr>
-          <tr>
-            <td width="16%">رقم المستند</td>
-            <td width="18%"></td>
-            <td width="16%">تاريخ المستند</td>
-            <td width="18%"></td>
-            <td width="16%">وقت المستند</td>
-            <td width="18%"></td>
-          </tr>
-          <tr>
-            <td width="150px">العميل</td>
-            <td width="100px"></td>
-            <td width="100px">المستخدم</td>
-            <td width="100px"></td>
-          </tr>
-          <tr>
-            <td width="150px">مسلسل العقد</td>
-            <td width="100px"></td>
-            <td width="100px">المفوض</td>
-            <td width="100px"></td>
-          </tr>
-          <tr>
-            <td width="150px">الفتح الاضافي</td>
-            <td width="100px"></td>
-            <td width="100px">تجميد/فرز/تكرار تداول</td>
-            <td width="100px"></td>
-          </tr>
-          <tr>
-            <td width="150px">ملاحظات</td>
-          </tr>
-        </table>
-        <table>
-          <tr width="100%">
-        </table>
-      <form [formGroup]="inboundForm" (ngSubmit)="onSubmit()" class="inbound-form">
-        <table class="inbound-table" dir="rtl">
-          <!-- Header -->
-          <tr>
-            <th colspan="6" class="table-title">محتويات الإذن</th>
-          </tr>
-
-          <!-- Table Head -->
-          <tr class="header-row">
-            <th style="width: 120px;">المجموعات السلعية</th>
-            <th style="width: 100px;">كود الصنف</th>
-            <th>بيان الصنف</th>
-            <th style="width: 120px;">عدد البالتات</th>
-            <th style="width: 120px;">عدد الكراتين</th>
-          </tr>
-
-          <!-- Row 1 -->
-          <tr>
-            <td>
-              <input type="text" formControlName="category" />
-            </td>
-            <td>
-              <input type="text" formControlName="itemCode" />
-            </td>
-            <td class="yellow">
-              <input type="text" formControlName="itemName" />
-            </td>
-            <td>
-              <input type="number" formControlName="palletCount" />
-            </td>
-            <td>
-              <input type="number" formControlName="cartonCount" />
-            </td>
-          </tr>
-
-          <!-- Empty rows like the paper -->
-          <tr *ngFor="let i of [1,2,3]">
-            <td></td>
-            <td></td>
-            <td class="yellow"></td>
-            <td></td>
-            <td></td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td colspan="3" class="total-label">الإجمالي</td>
-            <td colspan="2"></td>
-          </tr>
-        </table>
-      </form>
     </div>
+
+    <!-- Form -->
+    <form [formGroup]="inboundForm" (ngSubmit)="onSubmit()" class="inbound-form">
+      <!-- Client Name Section -->
+      <div class="form-section">
+        <h5 class="section-title">Order Details</h5>
+        
+        <div class="form-group">
+          <label for="clientName" class="form-label">
+            Client Name
+            <span class="required-badge">*</span>
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="clientName"
+            formControlName="clientName"
+            [class.is-invalid]="isFieldInvalid('clientName')"
+            placeholder="Enter client name"
+            [disabled]="loading"
+          />
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('clientName')">
+            <small *ngIf="inboundForm.get('clientName')?.hasError('required')">Client name is required</small>
+            <small *ngIf="inboundForm.get('clientName')?.hasError('minlength')">Minimum 2 characters required</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lines Section -->
+      <div class="form-section lines-section">
+        <div class="section-header">
+          <h5 class="section-title">Product Lines</h5>
+          <span class="lines-count badge bg-primary">{{ lines.length }} line(s)</span>
+        </div>
+
+        <div formArrayName="lines" class="lines-array">
+          <div *ngFor="let line of lines.controls; let i = index"
+               [formGroupName]="i"
+               class="line-card animate-fade-in">
+
+            <!-- Line Header -->
+            <div class="line-card-header">
+              <span class="line-badge">Line {{ i + 1 }}</span>
+              <button
+                type="button"
+                class="btn btn-sm btn-outline-danger"
+                (click)="removeLine(i)"
+                [disabled]="lines.length === 1 || loading"
+                title="Remove this line"
+              >
+                <i class="icon-trash"></i> Remove
+              </button>
+            </div>
+
+            <!-- Line Fields Grid -->
+            <div class="line-fields">
+              <!-- Product Dropdown -->
+              <div class="field-group">
+                <label for="product-{{ i }}" class="form-label">
+                  Product
+                  <span class="required-badge">*</span>
+                </label>
+                <select
+                  class="form-select"
+                  id="product-{{ i }}"
+                  formControlName="productName"
+                  [class.is-invalid]="isLineFieldInvalid(i, 'productName')"
+                  [disabled]="loading"
+                >
+                  <option value="">-- Select Product --</option>
+                  <option *ngFor="let product of products" [value]="product.name">
+                    {{ product.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isLineFieldInvalid(i, 'productName')">
+                  <small>Product is required</small>
+                </div>
+              </div>
+
+              <!-- Section Dropdown -->
+              <div class="field-group">
+                <label for="section-{{ i }}" class="form-label">
+                  Section
+                  <span class="required-badge">*</span>
+                </label>
+                <select
+                  class="form-select"
+                  id="section-{{ i }}"
+                  formControlName="sectionName"
+                  [class.is-invalid]="isLineFieldInvalid(i, 'sectionName')"
+                  [disabled]="loading"
+                >
+                  <option value="">-- Select Section --</option>
+                  <option *ngFor="let section of sections" [value]="section.name">
+                    {{ section.name }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="isLineFieldInvalid(i, 'sectionName')">
+                  <small>Section is required</small>
+                </div>
+              </div>
+
+              <!-- Cartons Input -->
+              <div class="field-group">
+                <label for="cartons-{{ i }}" class="form-label">
+                  Cartons
+                  <span class="required-badge">*</span>
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="cartons-{{ i }}"
+                  formControlName="cartons"
+                  [class.is-invalid]="isLineFieldInvalid(i, 'cartons')"
+                  placeholder="0"
+                  min="0"
+                  [disabled]="loading"
+                />
+                <div class="invalid-feedback" *ngIf="isLineFieldInvalid(i, 'cartons')">
+                  <small>{{ getLineFieldError(i, 'cartons') }}</small>
+                </div>
+              </div>
+
+              <!-- Pallets Input -->
+              <div class="field-group">
+                <label for="pallets-{{ i }}" class="form-label">
+                  Pallets
+                  <span class="required-badge">*</span>
+                </label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="pallets-{{ i }}"
+                  formControlName="pallets"
+                  [class.is-invalid]="isLineFieldInvalid(i, 'pallets')"
+                  placeholder="0"
+                  min="0"
+                  [disabled]="loading"
+                />
+                <div class="invalid-feedback" *ngIf="isLineFieldInvalid(i, 'pallets')">
+                  <small>{{ getLineFieldError(i, 'pallets') }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add Line Button -->
+        <button
+          type="button"
+          class="btn btn-outline-primary add-line-btn"
+          (click)="addLine()"
+          [disabled]="loading"
+        >
+          <i class="icon-plus"></i> Add Line
+        </button>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg"
+          [disabled]="inboundForm.invalid || submitting || loading"
+        >
+          <span *ngIf="!submitting">
+            <i class="icon-send"></i> Submit Inbound
+          </span>
+          <span *ngIf="submitting">
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Submitting...
+          </span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary btn-lg"
+          (click)="inboundForm.reset(); lines.clear(); lines.push(createNewLine())"
+          [disabled]="loading || submitting"
+        >
+          <i class="icon-undo"></i> Reset
+        </button>
+      </div>
+    </form>
   </div>
 </div>

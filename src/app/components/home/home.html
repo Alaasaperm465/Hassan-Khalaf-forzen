@@ -13,6 +13,9 @@
       <button class="btn btn-primary btn-lg" routerLink="/products">
         Products
       </button>
+      <button class="btn btn-success btn-lg ms-2 mt-3" routerLink="/inbound">
+        Inbound Orders
+      </button>
     </div>
   </div>
 
@@ -23,8 +26,8 @@
           <h2>{{ category.title }}</h2>
         </div>
         <div class="category-items">
-          <button 
-            *ngFor="let item of category.items" 
+          <button
+            *ngFor="let item of category.items"
             class="menu-item"
             [routerLink]="item.route"
           >

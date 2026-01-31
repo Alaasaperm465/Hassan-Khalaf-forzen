@@ -73,13 +73,12 @@ export class ProductListComponent implements OnInit {
     this.formSuccess = false;
 
     this.productService.createProduct({ name: this.productForm.value.name }).subscribe({
-      next: (newProduct) => {
+      next: () => {
         this.formSuccess = true;
         this.submitting = false;
-        // Add new product to the table without refresh
-        this.products.unshift(newProduct);
         setTimeout(() => {
           this.closeModal();
+          this.loadProducts();
         }, 1500);
       },
       error: () => {

@@ -1,0 +1,36 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface InboundLine {
+  productName: string;
+  sectionName: string;
+  cartons: number;
+  pallets: number;
+}
+
+export interface InboundRequest {
+  clientName: string;
+  lines: InboundLine[];
+}
+
+export interface InboundResponse {
+  id: string;
+  clientName: string;
+  lines: InboundLine[];
+  createdAt: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class InboundService {
+
+  private apiUrl = 'https://localhost:7006/api';
+
+  constructor(private http: HttpClient) {}
+
+  createInbound(data: InboundRequest): Observable<InboundResponse> {
+    return this.http.post<InboundResponse>(`${this.apiUrl}/inbound`, data);
+  }
+}
