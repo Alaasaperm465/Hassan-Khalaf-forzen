@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { InventoryService } from '../../services/inventory.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { ClientRequest, ProductRequest, InboundService } from '../../services/inbound.service';
 
 @Component({
   selector: 'app-outbound',
@@ -22,21 +23,47 @@ export class OutboundComponent implements OnInit, OnDestroy {
   error = '';
   private destroy$ = new Subject<void>();
 
+  clients: ClientRequest[] = [];
+  products: ProductRequest[] = [];
+
   constructor(
     private formBuilder: FormBuilder,
     private inventoryService: InventoryService,
+    private inboundService: InboundService,
     private router: Router
   ) {
     this.outboundForm = this.formBuilder.group({
-      productName: ['', Validators.required],
+      clientId: ['', Validators.required],
+      productId: ['', Validators.required],
       quantity: ['', [Validators.required, Validators.min(1)]],
       destination: ['', Validators.required],
       orderId: ['', Validators.required],
-      notes: ['']
+      notes: [''],
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadClients();
+    this.loadProducts();
+  }
+
+  private loadClients(): void {
+    this.inboundService.getAllClients()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => this.clients = res,
+        error: () => this.error = 'Failed to load clients'
+      });
+  }
+
+  private loadProducts(): void {
+    this.inboundService.getAllProducts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => this.products = res,
+        error: () => this.error = 'Failed to load products'
+      });
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next();
@@ -52,9 +79,7 @@ export class OutboundComponent implements OnInit, OnDestroy {
     this.error = '';
     this.success = '';
 
-    if (this.outboundForm.invalid) {
-      return;
-    }
+    if (this.outboundForm.invalid) return;
 
     this.loading = true;
     const formData = this.outboundForm.value;
@@ -62,18 +87,16 @@ export class OutboundComponent implements OnInit, OnDestroy {
     this.inventoryService.processOutbound(formData)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.loading = false;
           this.success = 'Outbound stock shipped successfully!';
           this.outboundForm.reset();
           this.submitted = false;
-          setTimeout(() => {
-            this.router.navigate(['/dashboard']);
-          }, 2000);
+          setTimeout(() => this.router.navigate(['/dashboard']), 2000);
         },
-        error: (error) => {
+        error: (err) => {
           this.loading = false;
-          this.error = error.error?.message || 'Failed to process outbound stock';
+          this.error = err.error?.message || 'Failed to process outbound stock';
         }
       });
   }

@@ -42,16 +42,42 @@
             <td width="18%"></td>
           </tr>
           <tr>
-            <td width="150px">العميل</td>
-            <td width="100px"></td>
-            <td width="100px">المستخدم</td>
-            <td width="100px"></td>
+            <!-- Client Dropdown -->
+<div class="form-group">
+  <label for="clientId" class="form-label">
+    <span class="label-icon">👤</span>
+    Client
+  </label>
+  <div class="input-wrapper">
+    <select
+      id="clientId"
+      formControlName="clientId"
+      class="form-control"
+      [class.is-invalid]="submitted && f['clientId'].errors"
+    >
+      <option value="" disabled>-- Select Client --</option>
+      <option *ngFor="let client of clients" [value]="client.id">
+        {{ client.name }}
+      </option>
+    </select>
+  </div>
+  <div *ngIf="submitted && f['clientId'].errors" class="invalid-feedback">
+    <div *ngIf="f['clientId'].errors['required']">Client is required</div>
+  </div>
+</div>
+
           </tr>
           <tr>
-            <td width="150px">مسلسل العقد</td>
-            <td width="100px"></td>
-            <td width="100px">المفوض</td>
-            <td width="100px"></td>
+            <div class="form-group">
+  <label for="productId" class="form-label">📝 Product</label>
+  <select id="productId" formControlName="productId" class="form-control" [class.is-invalid]="submitted && f['productId'].errors">
+    <option value="" disabled>-- Select Product --</option>
+    <option *ngFor="let product of products" [value]="product.id">{{ product.name }}</option>
+  </select>
+  <div *ngIf="submitted && f['productId'].errors" class="invalid-feedback">
+    <div *ngIf="f['productId'].errors['required']">Product is required</div>
+  </div>
+</div>
           </tr>
           <tr>
             <td width="150px">الفتح الاضافي</td>

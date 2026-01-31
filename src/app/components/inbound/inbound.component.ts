@@ -16,6 +16,9 @@ import { takeUntil, finalize } from 'rxjs/operators';
   styleUrl: './inbound.component.css'
 })
 export class InboundComponent implements OnInit, OnDestroy {
+createNewLine(): any {
+throw new Error('Method not implemented.');
+}
   inboundForm!: FormGroup;
   products: Product[] = [];
   sections: Section[] = [];
@@ -151,9 +154,6 @@ getLineFieldError(index: number, field: string): string {
   if (ctrl?.hasError('required')) return 'This field is required';
   if (ctrl?.hasError('min')) return 'Value must be 0 or more';
   return '';
-}
-createNewLine(): FormGroup {
-  return this.createLineFormGroup();
 }
 
 }

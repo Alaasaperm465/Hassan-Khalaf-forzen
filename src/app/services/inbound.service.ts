@@ -20,7 +20,13 @@ export interface InboundResponse {
   lines: InboundLine[];
   createdAt: string;
 }
+
 export interface ClientRequest {
+  id: number;
+  name: string;
+}
+
+export interface ProductRequest {
   id: number;
   name: string;
 }
@@ -37,7 +43,12 @@ export class InboundService {
   createInbound(data: InboundRequest): Observable<InboundResponse> {
     return this.http.post<InboundResponse>(`${this.apiUrl}/inbound`, data);
   }
-    getAllClients(): Observable<ClientRequest[]> {
+
+  getAllClients(): Observable<ClientRequest[]> {
     return this.http.get<ClientRequest[]>(`${this.apiUrl}/client`);
+  }
+
+  getAllProducts(): Observable<ProductRequest[]> {
+    return this.http.get<ProductRequest[]>(`${this.apiUrl}/product`);
   }
 }
