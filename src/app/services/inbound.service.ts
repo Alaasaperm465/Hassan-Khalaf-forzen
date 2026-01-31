@@ -10,7 +10,7 @@ export interface InboundLine {
 }
 
 export interface InboundRequest {
-  clientName: string;
+  clientId: number;
   lines: InboundLine[];
 }
 
@@ -19,6 +19,10 @@ export interface InboundResponse {
   clientName: string;
   lines: InboundLine[];
   createdAt: string;
+}
+export interface ClientRequest {
+  id: number;
+  name: string;
 }
 
 @Injectable({
@@ -32,5 +36,8 @@ export class InboundService {
 
   createInbound(data: InboundRequest): Observable<InboundResponse> {
     return this.http.post<InboundResponse>(`${this.apiUrl}/inbound`, data);
+  }
+    getAllClients(): Observable<ClientRequest[]> {
+    return this.http.get<ClientRequest[]>(`${this.apiUrl}/client`);
   }
 }

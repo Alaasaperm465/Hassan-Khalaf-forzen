@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
-import { InboundService, InboundLine } from '../../services/inbound.service';
+import { InboundService,ClientRequest } from '../../services/inbound.service';
 import { ProductService, Product } from '../../services/product.service';
 import { SectionService, Section } from '../../services/section.service';
+// import { InboundService, Client } from '../../services/inbound.service';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 
@@ -18,6 +19,8 @@ export class InboundComponent implements OnInit, OnDestroy {
   inboundForm!: FormGroup;
   products: Product[] = [];
   sections: Section[] = [];
+  clients: ClientRequest[] = [];
+
   loading = false;
   submitting = false;
   successMessage = '';
@@ -29,7 +32,8 @@ export class InboundComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private inboundService: InboundService,
     private productService: ProductService,
-    private sectionService: SectionService
+    private sectionService: SectionService,
+    // private clientService: ClientService
   ) {
     this.initForm();
   }
@@ -45,15 +49,10 @@ export class InboundComponent implements OnInit, OnDestroy {
 
   private initForm(): void {
     this.inboundForm = this.fb.group({
-      clientName: ['', [Validators.required, Validators.minLength(2)]],
+      clientId: [null, Validators.required],
       lines: this.fb.array([this.createLineFormGroup()])
-    }, { validators: this.minLinesValidator });
+    });
   }
-
-  private minLinesValidator = (group: FormGroup): { [key: string]: any } | null => {
-    const lines = group.get('lines') as FormArray;
-    return lines && lines.length >= 1 ? null : { minLines: true };
-  };
 
   private createLineFormGroup(): FormGroup {
     return this.fb.group({
@@ -68,32 +67,26 @@ export class InboundComponent implements OnInit, OnDestroy {
     return this.inboundForm.get('lines') as FormArray;
   }
 
-  createNewLine(): FormGroup {
-    return this.createLineFormGroup();
-  }
-
   private loadData(): void {
     this.loading = true;
-    this.errorMessage = '';
 
     forkJoin({
       products: this.productService.getAllProducts(),
-      sections: this.sectionService.getAllSections()
-    }).pipe(
-      finalize(() => {
-        this.loading = false;
-      }),
+      sections: this.sectionService.getAllSections(),
+      clients: this.inboundService.getAllClients()
+    })
+    .pipe(
+      finalize(() => (this.loading = false)),
       takeUntil(this.destroy$)
-    ).subscribe({
-      next: (result) => {
-        this.products = result.products || [];
-        this.sections = result.sections || [];
+    )
+    .subscribe({
+      next: (res) => {
+        this.products = res.products;
+        this.sections = res.sections;
+        this.clients = res.clients;
       },
-      error: (err) => {
-        console.error('Error loading data:', err);
-        this.errorMessage = 'Failed to load warehouse data. Please refresh the page.';
-        this.products = [];
-        this.sections = [];
+      error: () => {
+        this.errorMessage = 'Failed to load data';
       }
     });
   }
@@ -109,68 +102,58 @@ export class InboundComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    if (this.inboundForm.invalid) {
-      this.errorMessage = 'Please fill all required fields correctly and add at least one line.';
-      return;
-    }
+    if (this.inboundForm.invalid) return;
 
     this.submitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
-    const formData = {
-      clientName: this.inboundForm.get('clientName')?.value,
-      lines: this.lines.value
+    const payload = {
+      clientId: this.inboundForm.value.clientId,
+      lines: this.inboundForm.value.lines
     };
 
-    this.inboundService.createInbound(formData)
-      .pipe(
-        finalize(() => {
-          this.submitting = false;
-        }),
-        takeUntil(this.destroy$)
-      )
+    this.inboundService.createInbound(payload)
+      .pipe(finalize(() => (this.submitting = false)))
       .subscribe({
-        next: (response) => {
-          this.successMessage = `Inbound order created successfully! (ID: ${response.id})`;
+        next: (res) => {
+          this.successMessage = `Inbound created (ID: ${res.id})`;
           this.inboundForm.reset();
           this.lines.clear();
-          this.lines.push(this.createLineFormGroup());
-
-          // Clear success message after 5 seconds
-          setTimeout(() => {
-            this.successMessage = '';
-          }, 5000);
+          this.addLine();
         },
-        error: (err) => {
-          console.error('Error creating inbound:', err);
-          this.errorMessage = err.error?.message || 'Failed to create inbound order. Please try again.';
+        error: () => {
+          this.errorMessage = 'Failed to create inbound';
         }
       });
   }
 
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.inboundForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+  isFieldInvalid(field: string): boolean {
+    const ctrl = this.inboundForm.get(field);
+    return !!(ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched));
   }
-
-  isLineFieldInvalid(index: number, fieldName: string): boolean {
-    const field = this.lines.at(index)?.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
+  resetForm(): void {
+    this.inboundForm.reset();
+    this.lines.clear();
+    this.addLine();
   }
-
-  getLineFieldError(index: number, fieldName: string): string {
-    const field = this.lines.at(index)?.get(fieldName);
-    if (field?.hasError('required')) return `${fieldName} is required`;
-    if (field?.hasError('min')) return `${fieldName} must be at least 0`;
-    return '';
-  }
-
   closeAlert(type: 'success' | 'error'): void {
-    if (type === 'success') {
-      this.successMessage = '';
+  if (type === 'success') {
+    this.successMessage = '';
     } else {
       this.errorMessage = '';
     }
   }
+  isLineFieldInvalid(index: number, field: string): boolean {
+  const ctrl = this.lines.at(index)?.get(field);
+  return !!(ctrl && ctrl.invalid && (ctrl.dirty || ctrl.touched));
+}
+getLineFieldError(index: number, field: string): string {
+  const ctrl = this.lines.at(index)?.get(field);
+  if (ctrl?.hasError('required')) return 'This field is required';
+  if (ctrl?.hasError('min')) return 'Value must be 0 or more';
+  return '';
+}
+createNewLine(): FormGroup {
+  return this.createLineFormGroup();
+}
+
 }

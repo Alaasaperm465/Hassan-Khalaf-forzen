@@ -49,22 +49,25 @@
         <h5 class="section-title">Order Details</h5>
         
         <div class="form-group">
-          <label for="clientName" class="form-label">
-            Client Name
+          <label class="form-label">
+            Client
             <span class="required-badge">*</span>
           </label>
-          <input
-            type="text"
-            class="form-control"
-            id="clientName"
-            formControlName="clientName"
-            [class.is-invalid]="isFieldInvalid('clientName')"
-            placeholder="Enter client name"
+
+          <select
+            class="form-select"
+            formControlName="clientId"
+            [class.is-invalid]="isFieldInvalid('clientId')"
             [disabled]="loading"
-          />
-          <div class="invalid-feedback" *ngIf="isFieldInvalid('clientName')">
-            <small *ngIf="inboundForm.get('clientName')?.hasError('required')">Client name is required</small>
-            <small *ngIf="inboundForm.get('clientName')?.hasError('minlength')">Minimum 2 characters required</small>
+          >
+            <option value="">-- Select Client --</option>
+            <option *ngFor="let client of clients" [value]="client.id">
+              {{ client.name }}
+            </option>
+          </select>
+
+          <div class="invalid-feedback" *ngIf="isFieldInvalid('clientId')">
+            Client is required
           </div>
         </div>
       </div>
